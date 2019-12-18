@@ -8,6 +8,7 @@ const { getDireccion } = require('./lugar/lugar');
 const { getClima } = require('./clima/clima');
 
 let direccion = 'Quito';
+let direccion2 = 'Guayaquil';
 
 const getInfo = async(direccion) => {
 
@@ -16,10 +17,12 @@ const getInfo = async(direccion) => {
         const info = await getClima(coors.lat, coors.lng);
         return `El clima en ${coors.diraccion} es ${info.temp}`;
     } catch (error) {
-        console.log(`No se pudo determinar el clima para ${direccion}`);
+        return `No se pudo determinar el clima para ${direccion}`;
     }
 
 };
+
+
 
 const port = process.env.PORT || 3000;
 
@@ -29,17 +32,27 @@ app.use(express.static(__dirname + '/public'));
 hbs.registerPartials(__dirname + '/views/parciales');
 app.set('view engine', 'hbs');
 
-app.get('/', function(req, res) {
-    res.render('home', {
-        nombre: getInfo(direccion)
 
+
+app.get('/', function(req, res) {
+
+    getInfo(direccion).then(resp => {
+        res.render('home', {
+            ciud: resp
+
+        });
+    }).catch(error => {
+        res.render('home', {
+            ciud: error
+        });
     });
+
 });
 
 
-getInfo(direccion)
-    .then(resp => console.log(resp))
-    .catch(err => console.log(err));
+
+
+
 
 app.get('/about', (req, res) => {
     //res.send('Esta es mi primera web app');
