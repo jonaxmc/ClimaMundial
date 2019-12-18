@@ -59,6 +59,10 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
+app.get('/home2', (req, res) => {
+    //res.send('Esta es mi primera web app');
+    res.render('home2');
+});
 
 app.listen(port, () => {
     console.log(`Escuchando peticiones en el puerto ${port}`);
