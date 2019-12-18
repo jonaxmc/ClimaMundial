@@ -4,23 +4,22 @@ const app = express();
 const hbs = require('hbs');
 require('./hbs/helpers');
 
-const { getDireccion } = require('./lugar/lugar');
-const { getClima } = require('./clima/clima');
+const ubicacion = require('./lugar/lugar');
+const clima = require('./clima/clima');
 
 let direccion = 'Quito';
 let direccion2 = 'Guayaquil';
 
 const getInfo = async(direccion) => {
-
     try {
-        const coors = await getDireccion(direccion);
-        const info = await getClima(coors.lat, coors.lng);
-        return `El clima en ${coors.diraccion} es ${info.temp}`;
-    } catch (error) {
-        return `No se pudo determinar el clima para ${direccion}`;
-    }
+        const coords = await ubicacion.getCiudadLatLon(direccion);
+        const temp = await clima.getClima(coords.lat, coords.lon);
+        return `El clima de ${ direccion } es de ${ temp } °C.`;
+    } catch (e) {
+        return `No se pudo determinar el clima de ${ direccion }`;
 
-};
+    }
+}
 
 
 

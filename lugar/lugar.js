@@ -1,26 +1,41 @@
 const axios = require('axios');
 
+const getCiudadLatLon = async(nombre) => {
 
-const getDireccion = async(direccion) => {
-    let encodingURL = encodeURI(direccion);
+    const ciudad = encodeURI(nombre);
+    console.log("LA CIUDAD ES: ", ciudad)
 
-    let resp = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${ encodingURL }&key=AIzaSyB0XSbnG09joT8lAbRqwrSFvkrYtUw51zI`);
+    const instance = axios.create({
+        baseURL: `https://devru-latitude-longitude-find-v1.p.rapidapi.com/latlon.php?location=${ciudad}`,
+        headers: { 'X-RapidAPI-Key': '8ac05538ebmsh1d8d2bb9ae49d50p1737a9jsn3064fa337c89' }
+    });
 
-    if (resp.data.status === 'ZERO_RESULTS') {
-        throw new Error(`No existen resultados para la ciudad ${ direccion }`);
+    const resp = await instance.get();
+
+    if (resp.data.Results.length === 0) {
+        throw new Error(`No existe resultados para ${nombre}`);
     }
 
-    let location = resp.data.results[0];
-    let coors = location.geometry.location;
+    const data = resp.data.Results[0];
+    const name = data.name;
+    const lat = data.lat;
+    const lon = data.lon;
 
     return {
-        diraccion: location.formatted_address,
-        lat: coors.lat,
-        lng: coors.lng
+        name,
+        lat,
+        lon
     }
 
-};
+    // instance.get()
+    //     .then(resp => {
+    //         console.log(resp.data.Results[0]);
+    //     }).catch(err => {
+    //         console.log("ERROR:", err);
+    //     });
+
+}
 
 module.exports = {
-    getDireccion
-};
+    getCiudadLatLon
+}
