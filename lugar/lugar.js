@@ -3,7 +3,7 @@ const axios = require('axios');
 const getCiudadLatLon = async(nombre) => {
 
     const ciudad = encodeURI(nombre);
-    console.log("LA CIUDAD ES: ", ciudad)
+
 
     const instance = axios.create({
         baseURL: `https://devru-latitude-longitude-find-v1.p.rapidapi.com/latlon.php?location=${ciudad}`,
